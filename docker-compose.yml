@@ -1,0 +1,43 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    env_file:
+      - .env
+    environment:
+      LITELLM_API_BASE: http://litellm:4000
+    depends_on:
+      litellm:
+        condition: service_healthy
+    restart: unless-stopped
+
+  litellm:
+    image: docker.litellm.ai/berriai/litellm:main-stable
+    command:
+      - "--config"
+      - "/app/config.yaml"
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "4000"
+    volumes:
+      - ./backend/lite-llm/config.yaml:/app/config.yaml:ro
+    env_file:
+      - .env
+    environment:
+      LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY}
+    expose:
+      - "4000"
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://localhost:4000/health/liveliness')"
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped

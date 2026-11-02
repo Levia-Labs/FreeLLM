@@ -1,0 +1,24 @@
+model_list:
+  # Google Gemini
+  - model_name: gemini-free
+    litellm_params:
+      model: gemini/YOUR_GEMINI_MODEL
+      api_key: os.environ/GEMINI_API_KEY
+
+  # Groq
+  - model_name: groq-free
+    litellm_params:
+      model: groq/YOUR_GROQ_MODEL
+      api_key: os.environ/GROQ_API_KEY
+
+  # OpenRouter
+  - model_name: openrouter-free
+    litellm_params:
+      model: openrouter/YOUR_OPENROUTER_FREE_MODEL
+      api_key: os.environ/OPENROUTER_API_KEY
+
+litellm_settings:
+  drop_params: true
+
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY
